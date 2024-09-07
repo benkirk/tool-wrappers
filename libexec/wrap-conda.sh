@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # following https://hpc.nih.gov/apps/singularity.html
 SCRIPTDIR="$( cd "$( dirname "$(readlink -f ${BASH_SOURCE[0]})" )" >/dev/null 2>&1 && pwd )"
@@ -11,6 +11,7 @@ cmd="$(basename $0)"
 module purge >/dev/null 2>&1 || exit 1
 module load conda >/dev/null 2>&1
 
+# create the conda environment, if necessary.
 make -C ${SCRIPTDIR} --silent ${cmd}-env
 
 conda activate ${SCRIPTDIR}/${cmd}-env/ >/dev/null 2>&1 \

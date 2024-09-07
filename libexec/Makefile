@@ -7,6 +7,7 @@ SHELL := /bin/bash
 # (https://github.com/libfuse/libfuse/pull/309)
 ratarmount-env: ratarmount.yaml /usr/bin/fusermount3 Makefile
 	[ -d $@ ] && mv $@ $@.old && rm -rf $@.old &
+	@echo "Creating conda environment $@..."
 	$(MAKE) solve-$@
 	module load conda && conda env create --file $< --prefix $@
 	module load conda && conda activate ./$@ && conda-tree deptree --small 2>/dev/null || conda list
