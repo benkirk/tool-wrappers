@@ -8,6 +8,11 @@ selfdir="$(dirname $(readlink -f ${BASH_SOURCE[0]}))"
 
 topdir="$(pwd)"
 
+TMPDIR="${TMPDIR:-/var/tmp}"
+
+#container_img="ncar-casper-gui_tools"
+container_img="tumbleweed-gui_tools"
+
 requested_command="$(basename ${0})"
 
 case "${requested_command}" in
@@ -26,7 +31,6 @@ XDG_RUNTIME_DIR=${TMPDIR}/xdg-runtime-${USER} && mkdir -p ${XDG_RUNTIME_DIR} && 
 type module >/dev/null 2>&1 || . /etc/profile.d/z00_modules.sh
 module load apptainer || exit 1
 
-container_img="ncar-casper-gui_tools"
 make ${container_img}.sif >/dev/null || exit 1
 
 cd ${topdir} || exit 1
@@ -43,5 +47,6 @@ singularity \
     --env DISPLAY=${DISPLAY} \
     --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} \
     --env NO_AT_BRIDGE=1 \
+    --env LANG="C.UTF-8" \
     ${selfdir}/${container_img}.sif \
     ${requested_command} ${@}
