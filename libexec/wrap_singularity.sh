@@ -35,6 +35,16 @@ make ${container_img}.sif >/dev/null || exit 1
 
 cd ${topdir} || exit 1
 
+unset default_mount
+# Set up the default bind mount.
+if [ -d /glade ]; then
+    default_mount=/glade
+elif [ -d /nobackup2 ]; then
+    default_mount=/nobackup2
+else
+    default_mount=${HOME}
+fi
+
 unset extra_binds
 
 [ -d /local_scratch ] && extra_binds="-B /local_scratch ${extra_binds}"
@@ -43,10 +53,10 @@ singularity \
     --quiet \
     exec \
     --cleanenv \
-    -B /glade ${extra_binds} \
+    -B ${default_mount} ${extra_binds} \
     --env DISPLAY=${DISPLAY} \
     --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} \
     --env NO_AT_BRIDGE=1 \
     --env LANG="C.UTF-8" \
     ${selfdir}/${container_img}.sif \
-    ${requested_command} ${@}
+    ${requested_command} "${@}"
